@@ -30,6 +30,7 @@ class EcmEffort:
     name: str
     date: datetime
 
+
 @dataclass
 class EcmContribution:
     results: str
@@ -38,6 +39,21 @@ class EcmContribution:
     reservation_key: str
     name: str
     date: datetime
+
+
+@dataclass
+class KamadaFamilyPrime:
+    n: int
+    ecm_n: int
+
+
+@dataclass
+class KamadaFamilyRow:
+    href: str
+    n_range: str
+    primes: List[KamadaFamilyPrime]
+    last_updated: datetime
+
 
 @dataclass
 class KamadaPrime:
