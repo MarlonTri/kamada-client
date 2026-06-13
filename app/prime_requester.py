@@ -1,21 +1,17 @@
 import time
 from client.kamada_client import KamadaClient
-import multiprocessing
 import threading
 
 
 class PrimeRequester(object):
-    def __init__(
-        self, client : KamadaClient= None
-    ):
+    def __init__(self, client: KamadaClient = None):
         if client is None:
-             self.client = KamadaClient()
-        else: 
-            self.client= client
+            self.client = KamadaClient()
+        else:
+            self.client = client
         self.primes = []
         self.request_thread: threading.Thread = None
         self._terminate = False
-
 
     def start(self):
         self._terminate = False
@@ -33,7 +29,6 @@ class PrimeRequester(object):
             time.sleep(5)
             print("Waiting for thread to exit....")
         print("Thread exited!!!")
-        
 
     def _request_primes(self):
         prime_previews = self.client.get_all_prime_previews()
@@ -50,13 +45,12 @@ class PrimeRequester(object):
 
 
 def main():
-    client = KamadaClient(request_delay_sec = 10)
+    client = KamadaClient(request_delay_sec=10)
     primeRequester = PrimeRequester(client=client)
     primeRequester.start()
     for i in range(30):
         time.sleep(1)
     primeRequester.terminate()
-
 
 
 if __name__ == "__main__":

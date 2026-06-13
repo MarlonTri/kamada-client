@@ -17,17 +17,13 @@ class Factorizer(object):
     def __init__(
         self,
         ecm_threads=3,
-        request_primes_threads=1,
     ):
 
         self.client = KamadaClient()
         self.primes = []
         self.containers = []
         self.ecm_threads = ecm_threads
-        self.request_primes_threads = request_primes_threads
-        self.prime_estimates: Dict[str, timedelta] = dict()
         self.prime_runs = dict()
-        self._start_non_ecm_threads()
         self.ecm_loop()
 
     def ecm_loop(self):
@@ -53,30 +49,10 @@ class Factorizer(object):
                     del containers[i]
                     break
 
-    def _start_non_ecm_threads(self):
-        assert self.request_primes_threads <= 1
-
-        self.request_thread = threading.Thread(
-            target=self._request_primes,
-            daemon=True,
-        )
-        if self.request_primes_threads:
-            self.request_thread.start()
-
-    def _request_primes(self):
-        prime_previews = self.client.get_all_prime_previews()
-        for prime_preview in prime_previews:
-            try:
-                prime = self.client.get_prime(prime_preview.url)
-            except Exception as e:
-                print("Failed to retrieve prime: ", prime_preview)
-            print(f"Retrieved prime = {prime.url}")
-        print("EXITING _request_primes FUNCTION!!!")
-
 
 def main():
 
-    factorizer = Factorizer(ecm_threads=8, request_primes_threads=True)
+    factorizer = Factorizer(ecm_threads=8)
     # primes = factorizer.client.get_cached_primes()
     # factorizer._estimate_primes()
 
