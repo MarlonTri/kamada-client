@@ -7,8 +7,10 @@ import concurrent
 
 from client.kamada_client import KamadaClient
 from client.kamada_types import KamadaPrime
-from ecm.ecm_batcher import EcmContainer, EcmStatus, estimate_cmd_time
+from ecm.ecm_batcher import EcmContainer, estimate_cmd_time
 from concurrent.futures import ThreadPoolExecutor
+
+from ecm.ecm_types import EcmStatus
 
 
 class Factorizer(object):
