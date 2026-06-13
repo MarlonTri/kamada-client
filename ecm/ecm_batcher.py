@@ -196,31 +196,6 @@ class EcmContainer:
             self.container.stop()
 
 
-ESTIMATE_TIMEOUT: int = 120
-
-
-@cachier(cache_dir="cache/time_estimation", wait_for_calc_timeout=ESTIMATE_TIMEOUT)
-def estimate_cmd_time(command, logger_tag = None):
-
-    ecm_container = EcmContainer(command, logger_tag=logger_tag)
-    ecm_container.start()
-    start = time.time()
-    time_remaining = None
-    # TODO - modify command to limit top time
-    try:
-        while (
-            ecm_container.time_remaining() is None
-            and time.time() - start < ESTIMATE_TIMEOUT
-        ):
-            time.sleep(1)
-        time_remaining = ecm_container.time_remaining()
-    except Exception as e:
-        print("Encountered error during {estimate_cmd_time} ", e)
-    finally:
-        ecm_container.stop()
-    return time_remaining
-
-
 # -----------------------
 # Example usage
 # -----------------------

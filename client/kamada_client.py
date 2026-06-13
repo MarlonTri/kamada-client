@@ -11,7 +11,15 @@ DEFAULT_SEED: int = 0xCAFEBEEF
 
 
 class KamadaClient(object):
-    PRIME_FAMILY_URLS: Dict[str, str] = {"ABBBC": "https://stdkmd.net/nrr/abbbc.htm"}
+    PRIME_FAMILY_URLS: Dict[str, str] = {
+        "ABBBC": "https://stdkmd.net/nrr/abbbc.htm",
+        "AABAA": "https://stdkmd.net/nrr/aabaa.htm",
+        "ABBBA": "https://stdkmd.net/nrr/abbba.htm",
+        "ABAAA": "https://stdkmd.net/nrr/abaaa.htm",
+        "AAABA": "https://stdkmd.net/nrr/aaaba.htm",
+        "ABBBB": "https://stdkmd.net/nrr/abbbb.htm",
+        "AAAAB": "https://stdkmd.net/nrr/aaaab.htm",
+    }
 
     def __init__(
         self,
@@ -30,7 +38,7 @@ class KamadaClient(object):
         )
         self.last_request = 0
 
-    def request_get(self, url, force_refresh):
+    def request_get(self, url, force_refresh, only_if_cached):
 
         if self.request_delay_sec and not self._session.cache.contains(url):
             now = time.time()
@@ -41,20 +49,28 @@ class KamadaClient(object):
                 )
                 time.sleep(self.request_delay_sec - time_since_last_req)
 
-        response = self._session.get(url, force_refresh=force_refresh)
+        response = self._session.get(
+            url, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
 
         if not response.from_cache:
             self.last_request = time.time()
 
         return response
 
-    def get_prime_family(self, url, force_refresh=False) -> KamadaFamily:
-        response = self.request_get(url, force_refresh=force_refresh)
+    def get_prime_family(
+        self, url, force_refresh=False, only_if_cached=False
+    ) -> KamadaFamily:
+        response = self.request_get(
+            url, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
         return parse_kamada_family(response.text)
 
     @time_it
-    def get_prime(self, url, force_refresh=False) -> KamadaPrime:
-        response = self.request_get(url, force_refresh=force_refresh)
+    def get_prime(self, url, force_refresh=False, only_if_cached=False) -> KamadaPrime:
+        response = self.request_get(
+            url, force_refresh=force_refresh, only_if_cached=only_if_cached
+        )
         return parse_kamada_prime(url, response.text)
 
     def get_cached_primes(self):
